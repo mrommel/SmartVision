@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}Projects{% endblock %}
+
+{% block nav-projects %}<li class="active"><a href="/vision/projects" data-nav-section="work"><span>Projects</span></a></li>{% endblock %}
+
+{% block content %}
+
+	<section id="fh5co-home" data-section="home" style="background-image: url(images/full_image_2.jpg);" data-stellar-background-ratio="0.5">
+		<div class="gradient"></div>
+		<div class="container">
+			<div class="text-wrap">
+				<div class="text-inner">
+					<div class="row">
+						<div class="col-md-8 col-md-offset-2">
+							<h1 class="to-animate">Projects</h1>
+							<h2 class="to-animate">Select the project you want to work on</h2>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="slant"></div>
+	</section>
+	
+	<section id="fh5co-intro">
+		<div class="container">
+			<div class="row row-bottom-padded-lg">
+				{% if projects_list %}
+					{% for project in projects_list %}
+						<div class="fh5co-block to-animate" style="background-image: url(images/img_7.jpg);">
+							<div class="overlay-darker"></div>
+								<div class="overlay"></div>
+								<div class="fh5co-text">
+									<i class="fh5co-intro-icon icon-bulb"></i>
+									<h2>{{ project }}</h2>
+									<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.</p>
+									<p><a href="/vision/project/{{ project.id }}" class="btn btn-primary">Get In Touch</a></p>
+								</div>
+							</div>
+							
+							{% if forloop.counter|divisibleby:3 %}
+								</div><div class="row row-bottom-padded-lg">
+							{% endif %}
+					{% endfor %}
+				{% else %}
+					<p>No Projects are available.</p>
+				{% endif %}			
+			</div>
+		</div>
+	</section>
+
+{% endblock %}

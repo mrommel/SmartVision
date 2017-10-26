@@ -3,12 +3,27 @@ from __future__ import unicode_literals
 
 from django.db import models
 
+class Project(models.Model):
+	name = models.CharField(max_length=50)
+	description = models.CharField(max_length=200, blank=True, null=True)
+	
+	"""
+		list of all controllers that share the same project
+	"""
+	def controllers(self):
+		return ViewController.objects.filter(project = self)
+	
+	def __unicode__(self):             
+		return self.name
+
 # 750x1334px
 class ViewController(models.Model):
 	name = models.CharField(max_length=50)
+	description = models.CharField(max_length=200, blank=True, null=True)
+	project = models.ForeignKey(Project, on_delete=models.CASCADE)
 	pub_date = models.DateTimeField('date published')
 	
-	def __unicode__(self):              # __unicode__ on Python 2
+	def __unicode__(self):              
 		return self.name
 
 class View(models.Model):
@@ -28,7 +43,7 @@ class Image(models.Model):
 	name = models.CharField(max_length=50)
 	image = models.FileField(upload_to='documents/%Y/%m/%d')
 
-	def __unicode__(self):              # __unicode__ on Python 2
+	def __unicode__(self):              
 		return self.name
 	
 	

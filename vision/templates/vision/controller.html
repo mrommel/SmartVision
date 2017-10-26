@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}Controller{% endblock %}
+
+{% block nav-projects %}<li class="active"><a href="/vision/projects" data-nav-section="work"><span>Projects</span></a></li>{% endblock %}
+
+{% block content %}
+
+	<section id="fh5co-home" data-section="home" style="background-image: url(images/full_image_2.jpg);" data-stellar-background-ratio="0.5">
+		<div class="gradient"></div>
+		<div class="container">
+			<div class="text-wrap">
+				<div class="text-inner">
+					<div class="row">
+						<div class="col-md-8 col-md-offset-2">
+							<h1 class="to-animate">Controller</h1>
+							<h2 class="to-animate">{{ controller }}</h2>
+							
+							<img src="https://www.mediaevent.de/wp-content/uploads/2013/04/on-the-beach.svg" alt="test" width="200" height="200" />
+							<img src="/vision/controller_image/{{ controller.id }}/image.svg" alt="test" width="200" height="200" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="slant"></div>
+	</section>
+
+{% endblock %}
