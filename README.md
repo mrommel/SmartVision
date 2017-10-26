@@ -16,3 +16,4 @@ python manage.py startapp vision
 
 python manage.py makemigrations vision
 python manage.py sqlmigrate vision 0001
+python manage.py migrate
