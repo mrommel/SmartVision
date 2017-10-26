@@ -8,3 +8,11 @@ python manage.py runserver
 ## migrations
 
 python manage.py migrate
+
+## history
+python -m django --version
+django-admin startproject smartvision
+python manage.py startapp vision
+
+python manage.py makemigrations vision
+python manage.py sqlmigrate vision 0001
