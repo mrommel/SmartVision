@@ -35,4 +35,12 @@ def controller(request, controller_id):
 	return HttpResponse(render_to_string('vision/controller.html', {'controller': controller,}))
 	
 def controller_image(request, controller_id):
-	return HttpResponse("<!--?xml version=\"1.0\" standalone=\"no\"?--><svg width=\"5cm\" height=\"4cm\" version=\"1.1\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"><image xlink:href=\"firefox.jpg\" x=\"0\" y=\"0\" height=\"50px\" width=\"50px\"></image></svg>", content_type="image/svg+xml")
+	
+	try:
+		controller = ViewController.objects.get(pk=controller_id)
+	except ViewController.DoesNotExist:
+		raise Http404("ViewController does not exist")
+		
+	controller_svg = controller.svg()
+	
+	return HttpResponse(controller_svg, content_type="image/svg+xml")

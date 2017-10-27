@@ -58,10 +58,6 @@
 	
 	<!-- Styleswitcher ( This style is for demo purposes only, you may delete this anytime. ) -->
 	<link rel="stylesheet" type="text/css" id="theme-switch" href="{% static 'vision/css/style.css' %}" />
-	
-    {% block scripts %}
-    {% endblock %}
-
 
 	<style>
 	/* For demo purpose only */
@@ -265,26 +261,26 @@
 
 	
 	<!-- jQuery -->
-	<script src="js/jquery.min.js"></script>
+	<script src="{% static 'vision/js/jquery.min.js' %}"></script>
 	<!-- jQuery Easing -->
-	<script src="js/jquery.easing.1.3.js"></script>
+	<script src="{% static 'vision/js/jquery.easing.1.3.js' %}"></script>
 	<!-- Bootstrap -->
-	<script src="js/bootstrap.min.js"></script>
+	<script src="{% static 'vision/js/bootstrap.min.js' %}"></script>
 	<!-- Waypoints -->
-	<script src="js/jquery.waypoints.min.js"></script>
+	<script src="{% static 'vision/js/jquery.waypoints.min.js' %}"></script>
 	<!-- Stellar Parallax -->
-	<script src="js/jquery.stellar.min.js"></script>
+	<script src="{% static 'vision/js/jquery.stellar.min.js' %}"></script>
 	<!-- Counter -->
-	<script src="js/jquery.countTo.js"></script>
+	<script src="{% static 'vision/js/jquery.countTo.js' %}"></script>
 	<!-- Magnific Popup -->
-	<script src="js/jquery.magnific-popup.min.js"></script>
-	<script src="js/magnific-popup-options.js"></script>
+	<script src="{% static 'vision/js/jquery.magnific-popup.min.js' %}"></script>
+	<script src="{% static 'vision/js/magnific-popup-options.js' %}"></script>
 	<!-- Google Map -->
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCefOgb1ZWqYtj7raVSmN4PL2WkTrc-KyA&sensor=false"></script>
-	<script src="js/google_map.js"></script>
+	<script src="{% static 'vision/js/google_map.js' %}"></script>
 
 	<!-- For demo purposes only styleswitcher ( You may delete this anytime ) -->
-	<script src="js/jquery.style.switcher.js"></script>
+	<script src="{% static 'vision/js/jquery.style.switcher.js' %}"></script>
 	<script>
 		$(function(){
 			$('#colour-variations ul').styleSwitcher({
@@ -300,10 +296,13 @@
 			});
 		});
 	</script>
+	
+	{% block scripts %}
+    {% endblock %}
 	<!-- End demo purposes only -->
 
 	<!-- Main JS (Do not remove) -->
-	<script src="js/main.js"></script>
+	<script src="{% static 'vision/js/main.js' %}"></script>
 
 	</body>
 </html>

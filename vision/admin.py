@@ -9,5 +9,7 @@ admin.site.register(Project)
 admin.site.register(ViewController)
 admin.site.register(Image)
 
+admin.site.register(Container)
+admin.site.register(Label)
 admin.site.register(ImageView)
 admin.site.register(Button)
