@@ -24,12 +24,13 @@
 	<meta name="twitter:url" content="" />
 	<meta name="twitter:card" content="" />
 
+	{% load staticfiles %}
+
 	<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-	<link rel="shortcut icon" href="favicon.ico">
+	<link rel="shortcut icon" href="/static/vision/images/favicon.ico">
 
 	<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600,400italic,700' rel='stylesheet' type='text/css'>
 	
-	{% load staticfiles %}
 	<!-- Animate.css -->
     <link rel="stylesheet" type="text/css" href="{% static 'vision/css/animate.css' %}" />
     <!-- Icomoon Icon Fonts-->
@@ -166,7 +167,7 @@
 
 
 	<!-- Modernizr JS -->
-	<script src="js/modernizr-2.6.2.min.js"></script>
+	<script src="{% static 'vision/js/modernizr-2.6.2.min.js' %}"></script>
 	<!-- FOR IE9 below -->
 	<!--[if lt IE 9]>
 	<script src="js/respond.min.js"></script>
@@ -186,8 +187,8 @@
 		        <div id="navbar" class="navbar-collapse collapse">
 		          <ul class="nav navbar-nav navbar-right">
 		            {% block nav-home %}<li><a href="/vision/index" data-nav-section="home"><span>Home</span></a></li>{% endblock %}
-		            {% block nav-projects %}<li><a href="/vision/projects" data-nav-section="work"><span>Projects</span></a></li>{% endblock %}
-		            <li><a href="/admin" target="_blank" data-nav-section="about"><span>Admin</span></a></li>
+		            {% block nav-projects %}<li><a href="/vision/projects" class="external" data-nav-section="work"><span>Projects</span></a></li>{% endblock %}
+		            <li><a href="/admin" target="_blank" class="external" data-nav-section="about"><span>Admin</span></a></li>
 		            {% block nav-contact %}<li><a href="#" data-nav-section="contact"><span>Contact</span></a></li>{% endblock %}
 		          </ul>
 		        </div>
@@ -227,28 +228,28 @@
 		<h3>Preset Colors</h3>
 		<ul>
 			<li>
-				<a href="javascript: void(0);" data-theme="style">
+				<a href="javascript: void(0);" data-theme="../../../static/vision/css/style">
 					<span style="background: #3f95ea;"></span>
 					<span style="background: #52d3aa;"></span>
 					<span style="background: #f2f2f2;"></span>
 				</a>
 			</li>
 			<li>
-				<a href="javascript: void(0);" data-theme="style2">
+				<a href="javascript: void(0);" data-theme="../../../static/vision/css/style2">
 					<span style="background: #329998;"></span>
 					<span style="background: #6cc99c;"></span>
 					<span style="background: #f2f2f2;"></span>
 				</a>
 			</li>
 			<li>
-				<a href="javascript: void(0);" data-theme="style3">
+				<a href="javascript: void(0);" data-theme="../../../static/vision/css/style3">
 					<span style="background: #9f466e;"></span>
 					<span style="background: #c24d67;"></span>
 					<span style="background: #f2f2f2;"></span>
 				</a>
 			</li>
 			<li>
-				<a href="javascript: void(0);" data-theme="style4">
+				<a href="javascript: void(0);" data-theme="../../../static/vision/css/style4">
 					<span style="background: #21825C;"></span>
 					<span style="background: #A4D792;"></span>
 					<span style="background: #f2f2f2;"></span>
@@ -275,9 +276,6 @@
 	<!-- Magnific Popup -->
 	<script src="{% static 'vision/js/jquery.magnific-popup.min.js' %}"></script>
 	<script src="{% static 'vision/js/magnific-popup-options.js' %}"></script>
-	<!-- Google Map -->
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCefOgb1ZWqYtj7raVSmN4PL2WkTrc-KyA&sensor=false"></script>
-	<script src="{% static 'vision/js/google_map.js' %}"></script>
 
 	<!-- For demo purposes only styleswitcher ( You may delete this anytime ) -->
 	<script src="{% static 'vision/js/jquery.style.switcher.js' %}"></script>
@@ -294,6 +292,7 @@
 			$('.option-toggle').click(function() {
 				$('#colour-variations').toggleClass('sleep');
 			});
+			$('#colour-variations').toggleClass('sleep'); // send to back
 		});
 	</script>
 	

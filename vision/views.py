@@ -23,16 +23,26 @@ def project(request, project_id):
 		raise Http404("Project does not exist")
 		
 	controller_list = project.controllers()
+	initial_controller = project.initial_controller()
 	
-	return HttpResponse(render_to_string('vision/project.html', {'project': project, 'controller_list': controller_list, }))
+	scripts = ''
+	for controller in controller_list:
+		scripts = '%s%s' % (scripts, controller.script())
+	
+	return HttpResponse(render_to_string('vision/project.html', {'project': project, 'controller_list': controller_list, 'initial_controller': initial_controller, 'scripts': scripts, }))
 
+"""
+	shows content of a controller
+"""
 def controller(request, controller_id):
 	try:
 		controller = ViewController.objects.get(pk=controller_id)
 	except ViewController.DoesNotExist:
 		raise Http404("ViewController does not exist")
 	
-	return HttpResponse(render_to_string('vision/controller.html', {'controller': controller,}))
+	view_list = controller.views()
+	
+	return HttpResponse(render_to_string('vision/controller.html', {'controller': controller, 'view_list': view_list,}))
 	
 def controller_image(request, controller_id):
 	

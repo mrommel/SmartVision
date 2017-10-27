@@ -4,34 +4,18 @@
 
 {% block title %}Controller{% endblock %}
 
+{% load staticfiles %}
+
 {% block scripts %}
-<script>
-	var svgholder = document.getElementById("svgholder");
-	console.log("some svg loading " + svgholder);
-	svgholder.addEventListener('load', function() {
-   	 	
-   	 	
-   	 	var svg = svgholder.getSVGDocument();
-   	 	console.log("some svg loaded " + svg);
-   	 	
-   	 	svg.addEventListener("mouseover", function() {
-            console.log("svg mover");
-        }, true);
-   	 	
-   	 	svg.onclick = function() {
-            console.log("svg clicked");
-        };
-	});
-</script>
 
 {% endblock %}
 
-
-{% block nav-projects %}<li class="active"><a href="/vision/projects" data-nav-section="work"><span>Projects</span></a></li>{% endblock %}
+{% block nav-home %}<li><a href="/vision/index" class="external" data-nav-section="home"><span>Home</span></a></li>{% endblock %}
+{% block nav-projects %}<li class="active"><a href="/vision/projects" class="external" data-nav-section="work"><span>Projects</span></a></li>{% endblock %}
 
 {% block content %}
 
-	<section id="fh5co-home" data-section="home" style="background-image: url(images/full_image_2.jpg); height: 800px;" data-stellar-background-ratio="0.5">
+	<section id="fh5co-controller" data-section="home"" data-stellar-background-ratio="0.5">
 		<div class="gradient"></div>
 		<div class="container">
 			<div class="text-wrap">
@@ -46,6 +30,27 @@
 						</div>
 					</div>
 				</div>
+			</div>
+		</div>
+		<div class="slant"></div>
+	</section>
+	
+	<section id="fh5co-testimonials" data-section="testimonials">
+		<div class="container">
+			<div class="row row-bottom-padded-lg">
+				<div class="fh5co-block to-animate">
+					<div class="overlay-darker"></div>
+					<div class="overlay"></div>
+					<div class="fh5co-text">
+						{% if view_list %}
+							{% for view in view_list %}
+								<p>{{ view }} - {{ view.uniqueIdentifier }}</p>
+							{% endfor %}
+						{% else %}
+							<h3>No Views are available.</h3>
+						{% endif %}	
+					</div>
+				</div>		
 			</div>
 		</div>
 		<div class="slant"></div>

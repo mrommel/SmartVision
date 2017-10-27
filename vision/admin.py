@@ -9,7 +9,22 @@ admin.site.register(Project)
 admin.site.register(ViewController)
 admin.site.register(Image)
 
-admin.site.register(Container)
-admin.site.register(Label)
+"""
+	container can be saved ass
+"""
+class ContainerAdmin(admin.ModelAdmin):
+    save_as=True
+    
+admin.site.register(Container, ContainerAdmin)
+
+"""
+	label can be saved ass
+"""
+class LabelAdmin(admin.ModelAdmin):
+    save_as=True
+    
+admin.site.register(Label, LabelAdmin)
+
 admin.site.register(ImageView)
 admin.site.register(Button)
+admin.site.register(Action)
