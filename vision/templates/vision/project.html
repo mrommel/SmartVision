@@ -7,6 +7,9 @@
 {% load staticfiles %}
 
 {% block scripts %}
+
+<script src="{% static 'vision/js/svg.min.js' %}"></script>
+
 <script>
 	var svgholder = document.getElementById("svgholder");
 	console.log("some svg loading");
@@ -14,7 +17,7 @@
    	 	
    	 	var svg = svgholder.getSVGDocument();
    	 	console.log("some svg loaded " + svg);
-   	 	console.log("some svg loaded " + svg.getElementById('vc3view4'));
+   	 	//console.log("some svg loaded " + svg.getElementById('vc3view4'));
    	 	
    	 	{{ scripts|safe }}
 	});

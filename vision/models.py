@@ -46,7 +46,7 @@ class ViewController(models.Model):
 		
 		scriptStr = ''
 		for view in view_list:
-			scriptStr = '%s%s' % (scriptStr, view.script())
+			scriptStr = '%s\n%s' % (scriptStr, view.script())
 			
 		return scriptStr
 		
@@ -63,11 +63,11 @@ class ViewController(models.Model):
 		
 		view_list.sort(key=lambda x: x.z, reverse=False)
 		
-		imageViewStr = ''
-		for imageView in view_list:
-			imageViewStr = '%s%s' % (imageViewStr, imageView.svg())
+		viewStr = ''
+		for view in view_list:
+			viewStr = '%s\n%s' % (viewStr, view.svg())
 	
-		return "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"375px\" height=\"667px\" viewBox=\"0 0 375 667\">%s%s</svg>" % (background, imageViewStr)
+		return "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"375px\" height=\"667px\" viewBox=\"0 0 375 667\">%s%s</svg>" % (background, viewStr)
 	
 	def __unicode__(self):              
 		return self.name
@@ -79,14 +79,23 @@ class Image(models.Model):
 	def __unicode__(self):              
 		return self.name
 
+
 ACTIONCHOICE = (
     ('v', 'Goto ViewController'),
+    ('x', 'Slide View on x-Axis'),
+    ('y', 'Slide View on y-Axis'),
 )
 
 class Action(models.Model):
 	name = models.CharField(max_length=50, default='default action')
 	actionType = models.CharField(max_length=1, choices=ACTIONCHOICE)
 	targetViewController = models.ForeignKey(ViewController, on_delete=models.CASCADE, blank=True, null=True)
+	targetContainer = models.ForeignKey('Container', on_delete=models.CASCADE, blank=True, null=True)
+	targetImageView = models.ForeignKey('ImageView', on_delete=models.CASCADE, blank=True, null=True)
+	targetLabel = models.ForeignKey('Label', on_delete=models.CASCADE, blank=True, null=True)
+	start = models.IntegerField(default=0)
+	to = models.IntegerField(default=40)
+	duration = models.IntegerField(default=5) # in seconds
 
 	def __unicode__(self):              
 		return self.name
@@ -100,7 +109,7 @@ class View(models.Model):
 	height = models.IntegerField(default=40)
 	z = models.IntegerField(default=-1)
 	color = models.CharField(max_length=7, default='#f5f5f7')
-	action = models.ForeignKey(Action, on_delete=models.CASCADE, blank=True, null=True)
+	event = models.ForeignKey('Action', on_delete=models.CASCADE, blank=True, null=True)
 
 	def uniqueIdentifier(self):
 		return 'vc%dview%d' % (self.viewController.id, self.id)
@@ -109,26 +118,50 @@ class View(models.Model):
 		return 'svg: %s' % self.name
 		
 	def script(self):
+		if self.event == None:
+			return ''
+	
+		if self.event.actionType == 'v' and self.event.targetViewController <> None:
+			return 'var %s = svg.getElementById("%s"); if(%s != null) { %s.onclick = function() { console.log("%s clicked"); var svgholder = document.getElementById("svgholder"); svgholder.src = "/vision/controller_image/%d/image.svg"; }; }' % (self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.event.targetViewController.id)
+	
+		if self.event.actionType == 'x':
+			return 'var %s = svg.getElementById("%s"); if(%s != null) { %s.onclick = function() { console.log("x %s clicked"); var element = SVG.get("%s"); SVG.adopt(element).animate(2000).move(%d, 0).after(function(situation) { console.log("xani"); }); }; }' % (self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), (self.event.to - self.event.start))
+			
+		if self.event.actionType == 'y':
+			return 'var %s = svg.getElementById("%s"); if(%s != null) { %s.onclick = function() { console.log("y %s clicked"); var element = SVG.get("%s"); SVG.adopt(element).animate(2000).move(0, %d).after(function(situation) { console.log("xani"); }); }; }' % (self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), (self.event.to - self.event.start))
+	
 		return ''
 
 	class Meta:
 		abstract = True
 
+
 class Container(View):
-	def svg(self):
-		container_content = ''
 		
+	def children(self):
 		view_list = list(ImageView.objects.filter(parent = self))
 		view_list.extend(list(Button.objects.filter(parent = self)))
 		view_list.extend(list(Label.objects.filter(parent = self)))
-		#view_list.extend(list(Container.objects.filter(parent = self)))
 		
 		view_list.sort(key=lambda x: x.z, reverse=False)
+		
+		return view_list
 
-		for view in view_list:
-			container_content = '%s%s' % (container_content, view.svg())
+	def script(self):
+		view_str = super(Container, self).script()
+		
+		for view in self.children():
+			view_str = '%s\n%s' % (view_str, view.script())
+		
+		return view_str
+
+	def svg(self):
+		container_content = ''
+
+		for view in self.children():
+			container_content = '%s\n%s' % (container_content, view.svg())
 	
-		return '<g><title>%s</title><rect fill="%s" x="%d" y="%d" width="%d" height="%d"></rect></g><g transform="translate(%d,%d)"><title>container_content</title>%s</g>' % (self.name, self.color, self.x, self.y, self.width, self.height, self.x, self.y, container_content)
+		return '<g><title>%s</title><rect fill="%s" x="%d" y="%d" width="%d" height="%d" id="%s"></rect></g><g transform="translate(%d,%d)"><title>container_content</title>%s</g>' % (self.name, self.color, self.x, self.y, self.width, self.height, self.uniqueIdentifier(), self.x, self.y, container_content)
 	
 	def __unicode__(self):              
 		return self.name
@@ -161,11 +194,14 @@ class ImageView(View):
 		
 		return '%sview%d' % (self.parent.uniqueIdentifier(), self.id)
 	
-	def script(self):
-		if self.action == None:
-			return ''
-	
-		return 'var %s = svg.getElementById("%s"); if (%s != null) { %s.onclick = function() { console.log("%s clicked"); var svgholder = document.getElementById("svgholder"); svgholder.src = "/vision/controller_image/%d/image.svg"; }; }' % (self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.action.targetViewController.id)
+	#def script(self):
+	#	if self.event == None:
+	#		return ''
+	#
+	#	if self.event.actionType == 'v':
+	#		return 'var %s = svg.getElementById("%s"); if (%s != null) { %s.onclick = function() { console.log("%s clicked"); var svgholder = document.getElementById("svgholder"); svgholder.src = "/vision/controller_image/%d/image.svg"; }; }' % (self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.event.targetViewController.id)
+	#		
+	#	return ''
 	
 	def svg(self):
 		if self.image <> None:
