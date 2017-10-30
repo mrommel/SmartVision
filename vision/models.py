@@ -125,10 +125,19 @@ class View(models.Model):
 			return 'var %s = svg.getElementById("%s"); if(%s != null) { %s.onclick = function() { console.log("%s clicked"); var svgholder = document.getElementById("svgholder"); svgholder.src = "/vision/controller_image/%d/image.svg"; }; }' % (self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.event.targetViewController.id)
 	
 		if self.event.actionType == 'x':
-			return 'var %s = svg.getElementById("%s"); if(%s != null) { %s.onclick = function() { console.log("x %s clicked"); var element = SVG.get("%s"); SVG.adopt(element).animate(2000).move(%d, 0).after(function(situation) { console.log("xani"); }); }; }' % (self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), (self.event.to - self.event.start))
+			# $('#drawing g.my-group .my-element')
+			# var svgholder = document.getElementById("svgholder");  works
+			# var svg = svgholder.getSVGDocument(); console.log("some svg loaded " + svg); works
+			#
+			# var elem = document.getElementById("%s"); var element = svg.get("%s"); console.log("x %s clicked " + element + "/" + elem + "/" + svgholder);
+			#
+			# SVG.adopt(element).animate(2000).move(%d, 0).after(function(situation) { console.log("xani"); });
+			#
+			# , self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), (self.event.to - self.event.start)
+			return 'var %s = svg.getElementById("%s"); if(%s != null) { %s.onclick = function() { SVG.adopt(%s).animate(2000).move(%d, 0) }; }' % (self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), (self.event.to - self.event.start))
 			
 		if self.event.actionType == 'y':
-			return 'var %s = svg.getElementById("%s"); if(%s != null) { %s.onclick = function() { console.log("y %s clicked"); var element = SVG.get("%s"); SVG.adopt(element).animate(2000).move(0, %d).after(function(situation) { console.log("xani"); }); }; }' % (self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), (self.event.to - self.event.start))
+			return 'var %s = svg.getElementById("%s"); if(%s != null) { %s.onclick = function() { var element = SVG.get("%s"); console.log("y %s clicked " + element); SVG.adopt(element).animate(2000).move(0, %d).after(function(situation) { console.log("xani"); }); }; }' % (self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), (self.event.to - self.event.start))
 	
 		return ''
 
