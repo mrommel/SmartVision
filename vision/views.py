@@ -44,6 +44,9 @@ def controller(request, controller_id):
 	
 	return HttpResponse(render_to_string('vision/controller.html', {'controller': controller, 'view_list': view_list,}))
 	
+"""
+	returns a svg representation of the controller
+"""
 def controller_image(request, controller_id):
 	
 	try:
@@ -54,3 +57,4 @@ def controller_image(request, controller_id):
 	controller_svg = controller.svg()
 	
 	return HttpResponse(controller_svg, content_type="image/svg+xml")
+	

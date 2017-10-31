@@ -134,8 +134,30 @@ class View(models.Model):
 			# SVG.adopt(element).animate(2000).move(%d, 0).after(function(situation) { console.log("xani"); });
 			#
 			# , self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), (self.event.to - self.event.start)
-			return 'var %s = svg.getElementById("%s"); if(%s != null) { %s.onclick = function() { SVG.adopt(%s).animate(2000).move(%d, 0) }; }' % (self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), (self.event.to - self.event.start))
+			trigger = self.uniqueIdentifier()
 			
+			start_x = self.event.start
+			
+			target = 'abc'
+			start_y = 0
+			if self.event.targetContainer <> None:
+				target = self.event.targetContainer.uniqueIdentifier()
+				start_y = self.event.targetContainer.y
+				
+			if self.event.targetImageView <> None:
+				target = self.event.targetImageView.uniqueIdentifier()
+				start_y = self.event.targetImageView.y
+			
+			if self.event.targetLabel <> None:
+				target = self.event.targetLabel.uniqueIdentifier()
+				start_y = self.event.targetLabel.y
+				
+			delta = self.event.to
+			
+			duration = self.event.duration
+			
+			return "var {0} = svg.getElementById('{0}');\nvar {1} = svg.getElementById('{1}');\nif({0} != null) {{ {0}.onclick = function() {{ SVG.adopt({1}).move({2}, {3}).animate({5}).move({4}, {3}) }}; }};".format(trigger, target, start_x, start_y, delta, duration)
+
 		if self.event.actionType == 'y':
 			return 'var %s = svg.getElementById("%s"); if(%s != null) { %s.onclick = function() { var element = SVG.get("%s"); console.log("y %s clicked " + element); SVG.adopt(element).animate(2000).move(0, %d).after(function(situation) { console.log("xani"); }); }; }' % (self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), (self.event.to - self.event.start))
 	
