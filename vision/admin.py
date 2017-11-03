@@ -10,7 +10,7 @@ admin.site.register(ViewController)
 admin.site.register(Image)
 
 """
-	container can be saved ass
+	container can be saved as
 """
 class ContainerAdmin(admin.ModelAdmin):
     save_as=True
@@ -18,7 +18,7 @@ class ContainerAdmin(admin.ModelAdmin):
 admin.site.register(Container, ContainerAdmin)
 
 """
-	label can be saved ass
+	label can be saved as
 """
 class LabelAdmin(admin.ModelAdmin):
     save_as=True
@@ -27,4 +27,11 @@ admin.site.register(Label, LabelAdmin)
 
 admin.site.register(ImageView)
 admin.site.register(Button)
-admin.site.register(Action)
+
+"""
+	action can be saved as
+"""
+class ActionAdmin(admin.ModelAdmin):
+    save_as=True
+    
+admin.site.register(Action, ActionAdmin)

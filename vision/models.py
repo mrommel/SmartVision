@@ -125,15 +125,6 @@ class View(models.Model):
 			return 'var %s = svg.getElementById("%s"); if(%s != null) { %s.onclick = function() { console.log("%s clicked"); var svgholder = document.getElementById("svgholder"); svgholder.src = "/vision/controller_image/%d/image.svg"; }; }' % (self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.event.targetViewController.id)
 	
 		if self.event.actionType == 'x':
-			# $('#drawing g.my-group .my-element')
-			# var svgholder = document.getElementById("svgholder");  works
-			# var svg = svgholder.getSVGDocument(); console.log("some svg loaded " + svg); works
-			#
-			# var elem = document.getElementById("%s"); var element = svg.get("%s"); console.log("x %s clicked " + element + "/" + elem + "/" + svgholder);
-			#
-			# SVG.adopt(element).animate(2000).move(%d, 0).after(function(situation) { console.log("xani"); });
-			#
-			# , self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), (self.event.to - self.event.start)
 			trigger = self.uniqueIdentifier()
 			
 			start_x = self.event.start
@@ -156,10 +147,32 @@ class View(models.Model):
 			
 			duration = self.event.duration
 			
-			return "var {0} = svg.getElementById('{0}');\nvar {1} = svg.getElementById('{1}');\nif({0} != null) {{ {0}.onclick = function() {{ SVG.adopt({1}).move({2}, {3}).animate({5}).move({4}, {3}) }}; }};".format(trigger, target, start_x, start_y, delta, duration)
+			return "var {0} = svg.getElementById('{0}');\nvar {1} = svg.getElementById('{1}');\nvar {1}cont = svg.getElementById('{1}cont');\nif({0} != null) {{ {0}.onclick = function() {{ SVG.adopt({1}).move({2}, {3}).animate({5}).move({4}, {3}); if ({1}cont != null) {{ SVG.adopt({1}cont).move({2}, {3}).animate({5}).move({4}, {3}); }} }}; }};".format(trigger, target, start_x, start_y, delta, duration)
 
 		if self.event.actionType == 'y':
-			return 'var %s = svg.getElementById("%s"); if(%s != null) { %s.onclick = function() { var element = SVG.get("%s"); console.log("y %s clicked " + element); SVG.adopt(element).animate(2000).move(0, %d).after(function(situation) { console.log("xani"); }); }; }' % (self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), self.uniqueIdentifier(), (self.event.to - self.event.start))
+			trigger = self.uniqueIdentifier()
+			
+			start_y = self.event.start
+			
+			target = 'abc'
+			start_x = 0
+			if self.event.targetContainer <> None:
+				target = self.event.targetContainer.uniqueIdentifier()
+				start_x = self.event.targetContainer.x
+				
+			if self.event.targetImageView <> None:
+				target = self.event.targetImageView.uniqueIdentifier()
+				start_x = self.event.targetImageView.x
+			
+			if self.event.targetLabel <> None:
+				target = self.event.targetLabel.uniqueIdentifier()
+				start_x = self.event.targetLabel.x
+				
+			delta = self.event.to
+			
+			duration = self.event.duration
+		
+			return "var {0} = svg.getElementById('{0}');\nvar {1} = svg.getElementById('{1}');\nif({0} != null) {{ {0}.onclick = function() {{ SVG.adopt({1}).move({2}, {3}).animate({5}).move({2}, {4}) }}; }};".format(trigger, target, start_x, start_y, delta, duration)
 	
 		return ''
 
@@ -167,7 +180,14 @@ class View(models.Model):
 		abstract = True
 
 
+LAYOUTCHOICE = (
+    ('f', 'Fixed x,y based layout'),
+    ('v', 'Vertical layout'),
+    ('h', 'horizontal layout'),
+)
+
 class Container(View):
+	layoutType = models.CharField(max_length=1, choices=LAYOUTCHOICE, default='f')
 		
 	def children(self):
 		view_list = list(ImageView.objects.filter(parent = self))
@@ -188,20 +208,64 @@ class Container(View):
 
 	def svg(self):
 		container_content = ''
+		
+		children_list = self.children()
+		
+		# layout out the children 
+		if self.layoutType == 'v':
+			start_y = self.y
+			
+			for view in children_list:
+				view.y = start_y
+				start_y = start_y + view.height
 
-		for view in self.children():
+		for view in children_list:
 			container_content = '%s\n%s' % (container_content, view.svg())
 	
-		return '<g><title>%s</title><rect fill="%s" x="%d" y="%d" width="%d" height="%d" id="%s"></rect></g><g transform="translate(%d,%d)"><title>container_content</title>%s</g>' % (self.name, self.color, self.x, self.y, self.width, self.height, self.uniqueIdentifier(), self.x, self.y, container_content)
+		return '<g><title>%s</title><rect fill="%s" x="%d" y="%d" width="%d" height="%d" id="%s"></rect></g><g transform="translate(%d,%d)" id="%scont"><title>container_content</title>%s</g>' % (self.name, self.color, self.x, self.y, self.width, self.height, self.uniqueIdentifier(), self.x, self.y, self.uniqueIdentifier(), container_content)
 	
 	def __unicode__(self):              
 		return self.name
 
+ANCHORCHOICE = (
+    ('m', 'middle'),
+    ('s', 'start'),
+    ('e', 'end'),
+)
+
 class Label(View):
 	parent = models.ForeignKey(Container, on_delete=models.CASCADE, blank=True, null=True)
 	text = models.CharField(max_length=50)
+	anchor = models.CharField(max_length=1, choices=ANCHORCHOICE, default='m')
 	fontSize = models.IntegerField(default=14)
 	fontColor = models.CharField(max_length=7, default='#000000')
+	
+	def textAnchor(self):
+		if self.anchor == 's':
+			return 'start'
+			
+		if self.anchor == 'e':
+			return 'end'
+		
+		return 'middle'
+		
+	def textX(self):
+		if self.anchor == 's':
+			return self.x
+			
+		if self.anchor == 'e':
+			return self.x + self.width
+		
+		return self.x + self.width / 2
+	
+	def textY(self):
+		if self.anchor == 's':
+			return self.y + self.height / 2
+			
+		if self.anchor == 'e':
+			return self.y + self.height / 2
+		
+		return self.y + self.height / 2
 	
 	def uniqueIdentifier(self):
 		if self.viewController <> None:
@@ -210,7 +274,7 @@ class Label(View):
 		return '%sview%d' % (self.parent.uniqueIdentifier(), self.id)
 	
 	def svg(self):
-		return '<g><title>%s</title><rect fill=\"%s\" x="%d" y="%d" width="%d" height="%d"></rect><text x="%d" y="%d" fill="%s" text-anchor="middle" alignment-baseline="central">%s</text><style><![CDATA[text{ font: %dpx SFUIText-Light, SFUIText-Regular, SanFranciscoText-Light, SFCompactText-Light, HelveticaNeue-Light Helvetica Neue, Helvetica, Verdana, Arial, sans-serif;}]]></style></g>' % (self.name, self.color, self.x, self.y, self.width, self.height, self.x + self.width / 2, self.y + self.height / 2, self.fontColor, self.text, self.fontSize)
+		return '<g><title>%s</title><rect fill=\"%s\" x="%d" y="%d" width="%d" height="%d"></rect><text id="%s" x="%d" y="%d" fill="%s" text-anchor="%s" alignment-baseline="central">%s</text><style><![CDATA[text{ font: %dpx SFUIText-Light, SFUIText-Regular, SanFranciscoText-Light, SFCompactText-Light, HelveticaNeue-Light Helvetica Neue, Helvetica, Verdana, Arial, sans-serif;}]]></style></g>' % (self.name, self.color, self.x, self.y, self.width, self.height, self.uniqueIdentifier(), self.textX(), self.textY(), self.fontColor, self.textAnchor(), self.text, self.fontSize)
 	
 	def __unicode__(self):              
 		return self.name
