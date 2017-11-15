@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
 	'vision.apps.VisionConfig',
+	'imagevision.apps.ImagevisionConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

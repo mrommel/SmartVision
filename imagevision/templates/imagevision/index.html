@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load i18n %}
+
+{% block nav-home %}<li class="active"><a href="/vision/index" data-nav-section="home"><span>Home</span></a></li>{% endblock %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+	<section id="fh5co-home" data-section="home" style="background-image: url(images/full_image_2.jpg);" data-stellar-background-ratio="0.5">
+		<div class="gradient"></div>
+		<div class="container">
+			<div class="text-wrap">
+				<div class="text-inner">
+					<div class="row">
+						<div class="col-md-8 col-md-offset-2">
+							<h1 class="to-animate">365Farmnet</h1>
+							<h2 class="to-animate">Icons</h2>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="slant"></div>
+	</section>
+
+	
+	<section id="fh5co-work" data-section="work">
+		<div class="container">
+			<div class="row row-bottom-padded-sm">
+				{% for folder in folders %}
+			
+					<div class="col-md-4 col-sm-6 col-xxs-12">
+						<a href="folder/{{folder}}/" class="fh5co-project-item to-animate">
+							<img src="images/work_1.jpg" alt="Image" class="img-responsive">
+							<div class="fh5co-text">
+							<h2>{{folder}}</h2>
+							<span>Branding</span>
+							</div>
+						</a>
+					</div>
+					
+					{% if forloop.counter|divisibleby:2 %}
+						<div class="clearfix visible-sm-block"></div>
+					{% endif %}
+					
+				{% endfor %}
+					
+			</div>
+		</div>
+	</section>
+
+{% endblock %}
