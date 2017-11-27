@@ -86,9 +86,11 @@ def folder(request, folder_name):
 	images = Images()
 	
 	for file in file_list:
-		images.addFile(folder_name, file)
+		if file <> '.DS_Store':
+			images.addFile(folder_name, file)
 		
 	image_list = images.items
+	image_list.sort(key=lambda x: x.name)
 
 	return HttpResponse(render_to_string('imagevision/folder.html', {
 		'folder_name': folder_name,
