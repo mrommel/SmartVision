@@ -17,6 +17,21 @@
 						<div class="col-md-8 col-md-offset-2">
 							<h1 class="to-animate">365Farmnet</h1>
 							<h2 class="to-animate">{{ folder_name }}</h2>
+							<h3 class="to-animate">{{ image_name }}</h3>
+							<table>
+								<tr>
+									<td><img src="/images{{ image_item.image }}" alt="Image" class="img-responsive" style="width: 140px; padding-left: 17px"></td>
+									<td><img src="/images{{ image_item.eps }}" alt="Image" class="img-responsive" style="width: 140px; padding-left: 17px"></td>
+									<td><embed src="/images{{ image_item.pdf }}" type="application/pdf" width="140px" height="140px" style="width: 140px; padding-left: 17px"/></td>
+									<td><img src="/images{{ image_item.svg }}" alt="Image" class="img-responsive" style="width: 140px; padding-left: 17px"></td>
+								</tr>
+							</table>
+							<p>
+								
+								
+								
+								
+							</p>
 						</div>
 					</div>
 				</div>
@@ -24,30 +39,4 @@
 		</div>
 		<div class="slant"></div>
 	</section>
-
-	
-	<section id="fh5co-work" data-section="work">
-		<div class="container">
-			<div class="row row-bottom-padded-sm">
-				{% for image in image_list %}
-					<div class="col-md-2 col-sm-6 col-xxs-12">
-						<a href="/images/detail/{{ folder_name }}/{{ image.name }}" class="fh5co-project-item to-animate" style="height: 264px;">
-							<img src="/images{{ image.image }}" alt="Image" class="img-responsive" style="width: 140px; padding-left: 17px">
-						
-						<div class="fh5co-text">
-							<h2>{{ image.name }}</h2>
-							<span>Branding</span>
-						</div>
-						</a>
-					</div>
-					
-					{% if forloop.counter|divisibleby:2 %}
-						<div class="clearfix visible-sm-block"></div>
-					{% endif %}
-				{% endfor %}
-			
-			</div>
-		</div>
-	</section>
-
 {% endblock %}

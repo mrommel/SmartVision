@@ -26,6 +26,7 @@ class Image:
 		self.image = ''
 		self.eps = ''
 		self.pdf = ''
+		self.svg = ''
 		
 class Images:
 	def __init__(self):
@@ -52,6 +53,10 @@ class Images:
 					item.pdf = "/images/%s/%s" % (folder, file_name)
 					item.pdf = item.pdf.replace(" ", "%20")
 					
+				if file_extension == '.svg':
+					item.svg = "/images/%s/%s" % (folder, file_name)
+					item.svg = item.svg.replace(" ", "%20")
+					
 				self.items[idx] = item
 				
 				updated = True
@@ -73,6 +78,10 @@ class Images:
 			if file_extension == '.pdf':
 				item.pdf = "/images/%s/%s" % (folder, file_name)
 				item.pdf = item.pdf.replace(" ", "%20")
+				
+			if file_extension == '.svg':
+				item.svg = "/images/%s/%s" % (folder, file_name)
+				item.svg = item.svg.replace(" ", "%20")
 				
 			self.items.append(item)
 			
@@ -97,6 +106,29 @@ def folder(request, folder_name):
 		'image_list': image_list
 	}))
 	
+def detail(request, folder_name, image_name):
+
+	path="/Users/michael.rommel/365Farmnet/365Farmnet Icons/%s" % (folder_name)
+	file_list=os.listdir(path)   
+	#image_list.remove('.DS_Store')
+	
+	images = Images()
+	
+	for file in file_list:
+		if file <> '.DS_Store':
+			images.addFile(folder_name, file)
+		
+	image_list = images.items
+	image_item = next((x for x in image_list if x.name == image_name), None)
+
+	return HttpResponse(render_to_string('imagevision/detail.html', {
+		'image_list': image_list,
+		'image_name': image_name,
+		'folder_name': folder_name,
+		'image_item': image_item
+	}))
+	
+	
 def image(request, folder_name, image_name):
 
 	print >>sys.stderr, 'image: %s, %s' % (folder_name, image_name)	
@@ -105,3 +137,30 @@ def image(request, folder_name, image_name):
 	
 	image_data = open(path, "rb").read()
 	return HttpResponse(image_data, content_type='image/png')
+
+def image_eps(request, folder_name, image_name):
+
+	print >>sys.stderr, 'image: %s, %s' % (folder_name, image_name)	
+	path="/Users/michael.rommel/365Farmnet/365Farmnet Icons/%s/%s.eps" % (folder_name, image_name)
+	print >>sys.stderr, 'path: %s' % (path)	
+	
+	image_data = open(path, "rb").read()
+	return HttpResponse(image_data, content_type='application/eps')
+	
+def image_pdf(request, folder_name, image_name):
+
+	print >>sys.stderr, 'image: %s, %s' % (folder_name, image_name)	
+	path="/Users/michael.rommel/365Farmnet/365Farmnet Icons/%s/%s.pdf" % (folder_name, image_name)
+	print >>sys.stderr, 'path: %s' % (path)	
+	
+	image_data = open(path, "rb").read()
+	return HttpResponse(image_data, content_type='application/pdf')
+	
+def image_svg(request, folder_name, image_name):
+
+	print >>sys.stderr, 'image: %s, %s' % (folder_name, image_name)	
+	path="/Users/michael.rommel/365Farmnet/365Farmnet Icons/%s/%s.svg" % (folder_name, image_name)
+	print >>sys.stderr, 'path: %s' % (path)	
+	
+	image_data = open(path, "rb").read()
+	return HttpResponse(image_data, content_type='image/svg+xml')
