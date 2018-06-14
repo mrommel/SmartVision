@@ -9,6 +9,8 @@ from django.http import HttpResponse, Http404
 from django.template import RequestContext, loader
 from django.template.loader import render_to_string
 
+from .models import *
+
 
 def index(request):
 	path="/Users/michael.rommel/365Farmnet/365Farmnet Icons/"
@@ -19,7 +21,7 @@ def index(request):
 		'folders': folder_list,
 	}))
 	
-class Image:
+class ImageItem:
 
 	def __init__(self):
 		self.name = ''
@@ -28,7 +30,7 @@ class Image:
 		self.pdf = ''
 		self.svg = ''
 		
-class Images:
+class ImageItems:
 	def __init__(self):
 		self.items = []
 		
@@ -64,7 +66,7 @@ class Images:
 				#print >>sys.stderr, 'Updated'
 				
 		if updated == False:
-			item = Image()
+			item = ImageItem()
 			item.name = filename
 			
 			if file_extension == '.png':
@@ -92,14 +94,23 @@ def folder(request, folder_name):
 	file_list=os.listdir(path)   
 	#image_list.remove('.DS_Store')
 	
-	images = Images()
+	images = ImageItems()
 	
 	for file in file_list:
 		if file <> '.DS_Store':
 			images.addFile(folder_name, file)
 		
-	image_list = images.items
-	image_list.sort(key=lambda x: x.name)
+	image_items = images.items
+	image_items.sort(key=lambda x: x.name)
+	
+	for image_in_items in image_items:
+		try:
+			image = Image.objects.get(filename=image_in_items.name, folder=folder_name)
+		except Image.DoesNotExist:
+			image = Image(filename=image_in_items.name, folder=folder_name)
+			image.save()
+			
+	image_list = Image.objects.filter(folder=folder_name)
 
 	return HttpResponse(render_to_string('imagevision/folder.html', {
 		'folder_name': folder_name,
@@ -112,7 +123,7 @@ def detail(request, folder_name, image_name):
 	file_list=os.listdir(path)   
 	#image_list.remove('.DS_Store')
 	
-	images = Images()
+	images = ImageItems()
 	
 	for file in file_list:
 		if file <> '.DS_Store':
