@@ -34,8 +34,7 @@
 								{% for tag in image.tags.all %}
     								<a href="/images/tag/{{ tag.id }}/">{{ tag }}</a>, 
 								{% endfor %}
-								
-								
+																
 							</p>
 						</div>
 					</div>
@@ -43,5 +42,25 @@
 			</div>
 		</div>
 		<div class="slant"></div>
+	</section>
+	
+	<section id="fh5co-work" data-section="work">
+		<div class="container">
+			<div class="row row-bottom-padded-sm">
+				Related:<br />
+				{% for related in image.related.all %}
+					<div class="col-md-2 col-sm-6 col-xxs-12">
+    					<img src="/images/images/{{ related.unique_id }}.png" alt="Image" class="img-responsive" style="width: 140px; padding-left: 17px">
+						<div class="fh5co-text">
+							<h2>{{ related.filename }}</h2>
+						</div>
+					</div>
+					{% if forloop.counter|divisibleby:2 %}
+						<div class="clearfix visible-sm-block"></div>
+					{% endif %}
+				{% endfor %}
+				
+			</div>
+		</div>
 	</section>
 {% endblock %}
