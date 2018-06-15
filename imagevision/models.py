@@ -10,7 +10,7 @@ from django.contrib.staticfiles import finders
 class Tag(models.Model):
 	name = models.CharField(max_length=50)
 	
-	def __str__(self):
+	def __unicode__(self): 
 		return self.name
 	
 	class Meta:
@@ -22,7 +22,7 @@ class Image(models.Model):
 	filename = models.CharField(max_length=50)
 	title = models.CharField(max_length=50, blank=True, null=True)
 	folder = models.CharField(max_length=200, blank=True, null=True)
-	tags = models.ManyToManyField(Tag)
+	tags = models.ManyToManyField(Tag, blank=True, null=True)
 	
 	def full_path(self):
 		return "/Users/michael.rommel/365Farmnet/365Farmnet Icons/%s/%s" % (self.folder, self.filename)
@@ -39,7 +39,7 @@ class Image(models.Model):
 		
 		return str
 	
-	def __str__(self):
+	def __unicode__(self): 
 		return self.filename
 	
 	class Meta:

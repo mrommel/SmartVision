@@ -36,7 +36,10 @@
 						
 						<div class="fh5co-text">
 							<h2>{{ image.filename }}</h2>
-							<span>Branding</span>
+							<span>{% for tag in image.tags.all %}
+    								{{ tag }}, 
+								{% endfor %}
+							</span>
 						</div>
 						</a>
 					</div>
