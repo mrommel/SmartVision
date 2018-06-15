@@ -16,22 +16,23 @@
 					<div class="row">
 						<div class="col-md-8 col-md-offset-2">
 							<h1 class="to-animate">365Farmnet</h1>
-							<h2 class="to-animate">{{ folder_name }}</h2>
-							<h3 class="to-animate">{{ image_name }}</h3>
+							<h2 class="to-animate">{{ image.filename }}</h2>
 							<table>
 								<tr>
-									<td><img src="/images{{ image_item.image }}" alt="Image" class="img-responsive" style="width: 140px; padding-left: 17px"></td>
-									<td><img src="/images{{ image_item.eps }}" alt="Image" class="img-responsive" style="width: 140px; padding-left: 17px"></td>
-									<td><embed src="/images{{ image_item.pdf }}" type="application/pdf" width="140px" height="140px" style="width: 140px; padding-left: 17px"/></td>
-									<td><img src="/images{{ image_item.svg }}" alt="Image" class="img-responsive" style="width: 140px; padding-left: 17px"></td>
+									<td><img src="/images/images/{{ image.unique_id }}.png" alt="Image" class="img-responsive" style="width: 140px; padding-left: 17px"></td>
+									<td><img src="/images/images/{{ image.unique_id }}.jpg" alt="Image" class="img-responsive" style="width: 140px; padding-left: 17px"></td>
+									<td><img src="/images/images/{{ image.unique_id }}.eps" alt="Image" class="img-responsive" style="width: 140px; padding-left: 17px"></td>
+									<td><embed src="/images/images/{{ image.unique_id }}.pdf" type="application/pdf" width="140px" height="140px" style="width: 140px; padding-left: 17px"/></td>
+									<td><img src="/images/images/{{ image.unique_id }}.svg" alt="Image" class="img-responsive" style="width: 140px; padding-left: 17px"></td>
 								</tr>
 							</table>
 							<p>
-								Key<br />
-								Folder<br />
-								Similar images<br />
-								Tags	
-								
+								Key: {{ image.unique_id }}<br />
+								Folder: <a href="/images/folder/{{ image.folder }}/">{{ image.folder }}</a><br />
+								Tags:
+								{% for tag in image.tags.all %}
+    								<a href="/images/tag/{{ tag.id }}/">{{ tag }}</a>, 
+								{% endfor %}
 								
 								
 							</p>

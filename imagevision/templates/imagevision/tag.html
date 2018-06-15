@@ -16,7 +16,7 @@
 					<div class="row">
 						<div class="col-md-8 col-md-offset-2">
 							<h1 class="to-animate">365Farmnet</h1>
-							<h2 class="to-animate">{{ folder_name }}</h2>
+							<h2 class="to-animate">{{ tag.name }}</h2>						
 						</div>
 					</div>
 				</div>
@@ -24,19 +24,18 @@
 		</div>
 		<div class="slant"></div>
 	</section>
-
 	
 	<section id="fh5co-work" data-section="work">
 		<div class="container">
 			<div class="row row-bottom-padded-sm">
 				{% for image in image_list %}
 					<div class="col-md-2 col-sm-6 col-xxs-12">
+
 						<a href="/images/detail/{{ image.unique_id }}/" class="fh5co-project-item to-animate" style="height: 264px;">
 							<img src="/images/images/{{ image.unique_id }}.png" alt="Image" class="img-responsive" style="width: 140px; padding-left: 17px">
 						
 						<div class="fh5co-text">
 							<h2>{{ image.filename }}</h2>
-							<span>Branding</span>
 						</div>
 						</a>
 					</div>
@@ -49,5 +48,4 @@
 			</div>
 		</div>
 	</section>
-
 {% endblock %}

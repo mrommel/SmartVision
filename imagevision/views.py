@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import os
 import sys
 
+import os.path
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
 from django.template import RequestContext, loader
@@ -116,62 +117,68 @@ def folder(request, folder_name):
 		'folder_name': folder_name,
 		'image_list': image_list
 	}))
-	
-def detail(request, folder_name, image_name):
 
-	path="/Users/michael.rommel/365Farmnet/365Farmnet Icons/%s" % (folder_name)
-	file_list=os.listdir(path)   
-	#image_list.remove('.DS_Store')
-	
-	images = ImageItems()
-	
-	for file in file_list:
-		if file <> '.DS_Store':
-			images.addFile(folder_name, file)
+def detail(request, identifier):
+	try:
+		image = Image.objects.get(unique_id=identifier)
+	except Image.DoesNotExist:
+		raise Http404("Image does not exist")
 		
-	image_list = images.items
-	image_item = next((x for x in image_list if x.name == image_name), None)
-
 	return HttpResponse(render_to_string('imagevision/detail.html', {
-		'image_list': image_list,
-		'image_name': image_name,
-		'folder_name': folder_name,
-		'image_item': image_item
-	}))
+		'image': image
+	}))	
 	
-	
-def image(request, folder_name, image_name):
+def tag(request, tag_id):
+	try:
+		tag = Tag.objects.get(id=tag_id)
+	except Tag.DoesNotExist:
+		raise Http404("Tag does not exist")
+		
+	image_list = Image.objects.filter(tags=tag)
 
-	print >>sys.stderr, 'image: %s, %s' % (folder_name, image_name)	
-	path="/Users/michael.rommel/365Farmnet/365Farmnet Icons/%s/%s.png" % (folder_name, image_name)
-	print >>sys.stderr, 'path: %s' % (path)	
+	return HttpResponse(render_to_string('imagevision/tag.html', {
+		'tag': tag,
+		'image_list': image_list
+	}))	
 	
-	image_data = open(path, "rb").read()
-	return HttpResponse(image_data, content_type='image/png')
+def image(request, identifier, extension, content_type):
 
-def image_eps(request, folder_name, image_name):
+	try:
+		image = Image.objects.get(unique_id=identifier)
+	except Image.DoesNotExist:
+		raise Http404("Image does not exist")	
+	
+	image_path = "%s.%s" % (image.full_path(), extension)
+	
+	if os.path.isfile(image_path):
+		try:
+			image_file = open(image_path, "rb")
+	
+			image_data = image_file.read()
+			return HttpResponse(image_data, content_type=content_type)
+		except FileNotFoundError:
+			raise Http404("could not read file")	
+	else:
+		raise Http404("Image of content_type does not exist")	
+	
+def image_png(request, identifier):
 
-	print >>sys.stderr, 'image: %s, %s' % (folder_name, image_name)	
-	path="/Users/michael.rommel/365Farmnet/365Farmnet Icons/%s/%s.eps" % (folder_name, image_name)
-	print >>sys.stderr, 'path: %s' % (path)	
+	return image(request, identifier, "png", "image/png")
 	
-	image_data = open(path, "rb").read()
-	return HttpResponse(image_data, content_type='application/eps')
-	
-def image_pdf(request, folder_name, image_name):
+def image_jpg(request, identifier):
 
-	print >>sys.stderr, 'image: %s, %s' % (folder_name, image_name)	
-	path="/Users/michael.rommel/365Farmnet/365Farmnet Icons/%s/%s.pdf" % (folder_name, image_name)
-	print >>sys.stderr, 'path: %s' % (path)	
-	
-	image_data = open(path, "rb").read()
-	return HttpResponse(image_data, content_type='application/pdf')
-	
-def image_svg(request, folder_name, image_name):
+	return image(request, identifier, "jpg", "image/jpg")
 
-	print >>sys.stderr, 'image: %s, %s' % (folder_name, image_name)	
-	path="/Users/michael.rommel/365Farmnet/365Farmnet Icons/%s/%s.svg" % (folder_name, image_name)
-	print >>sys.stderr, 'path: %s' % (path)	
+def image_eps(request, identifier):
+
+	return image(request, identifier, "eps", "application/eps")
+
+def image_pdf(request, identifier):
+
+	return image(request, identifier, "pdf", "application/pdf")
 	
-	image_data = open(path, "rb").read()
-	return HttpResponse(image_data, content_type='image/svg+xml')
+def image_svg(request, identifier):
+
+	return image(request, identifier, "svg", "image/svg+xml")
+	
+
