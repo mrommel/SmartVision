@@ -48,6 +48,16 @@ class Image(models.Model):
 			str = '%s, %s' % (str, tag.name)
 		
 		return str
+		
+	def related_links(self):
+		related_str = ''
+		
+		for related_item in self.related.all():
+			related_str = u'%s<a href="/admin/imagevision/image/%d/change/"><img border="0" alt="" src="/images/images/%s.png" height="40" /></a>, ' % (related_str, related_item.id, related_item.unique_id)
+	
+		return related_str
+	related_links.allow_tags = True
+	related_links.short_description = "Related"
 	
 	def __unicode__(self): 
 		return self.filename
