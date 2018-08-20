@@ -28,3 +28,25 @@ def project(request, project_id):
 	return HttpResponse(render_to_string('screens/project.html', {
 		'project': project,
 	}))
+	
+def layout(request, layout_id):
+	
+	try:
+		layout = Layout.objects.get(id=layout_id)
+	except Layout.DoesNotExist:
+		raise Http404("Layout does not exist")
+		
+	return HttpResponse(render_to_string('screens/layout.html', {
+		'layout': layout,
+	}))
+	
+def screen_svg(request, screen_id):
+
+	try:
+		screen = Screen.objects.get(id=screen_id)
+	except Screen.DoesNotExist:
+		raise HTTP404("Screen does not exist")
+		
+	return HttpResponse(render_to_string('svg.html', {
+		'screen': screen,
+	})) 
