@@ -8,5 +8,5 @@ urlpatterns = [
     url(r'^project/(?P<project_id>.+)/$', views.project, name='project'),
     url(r'^layout/(?P<layout_id>.+)/$', views.layout, name='layout'),
     
-    url(r'^screen/(?P<screen_id>.+)/$', views.screen_svg, name='screen_svg'),
+    url(r'^screen/(?P<screen_id>.+).svg$', views.screen_svg, name='screen_svg'),
 ]

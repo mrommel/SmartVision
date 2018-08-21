@@ -49,4 +49,4 @@ def screen_svg(request, screen_id):
 		
 	return HttpResponse(render_to_string('svg.html', {
 		'screen': screen,
-	})) 
+	}), content_type="image/svg+xml") 

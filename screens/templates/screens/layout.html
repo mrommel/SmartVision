@@ -13,15 +13,23 @@
         <div class="team-title">
           <h3 class="os-animation animated flipInX" data-os-animation="flipInX" data-os-animation-delay="0.3s" style="animation-delay: 0.3s;">Layout</h3>
           <p class="os-animation animated flipInY" data-os-animation="flipInY" data-os-animation-delay="0.5s" style="animation-delay: 0.5s;">
-          	<img src="{% static 'screens/images/layout.jpg' %}" width="24" alt="" class="os-animation animated fadeInDown" data-os-animation="fadeInDown" data-os-animation-delay="0.3s" style="animation-delay: 0.3s;">&nbsp;{{layout}}
+          	<img src="{% static 'screens/images/layout.jpg' %}" width="24" alt="" class="os-animation animated fadeInDown" data-os-animation="fadeInDown" data-os-animation-delay="0.3s" style="animation-delay: 0.3s;">&nbsp;{{ layout }}
           </p>
           <span class="os-animation animated rotateIn" data-os-animation="rotateIn" data-os-animation-delay="0.7s" style="animation-delay: 0.7s;"></span> 
         </div>
         
-        {% for i in "xxxxxxxxxxxxxxxxxxxx" %}
-        	{{ forloop.counter0 }}
-    		{{ layout }}
+        {% for screen_row in layout.screen_table %}
+        	{% for cell in screen_row %}
+        		{% if forloop.first %}
+					{{ cell }}
+				{% else %}
+					<object data="/screens/screen/{{ cell.id }}.svg" type="image/svg+xml" width="300" height="600"></object>
+					<!--<img src="/screens/screen/{{ cell.id }}.svg" width="300" height="600" alt="{{ cell.id }}">-->
+				{% endif %}
+        	{% endfor %}
+        	<br />
 		{% endfor %}
+
         <!--<div class="col-lg-5  col-lg-push-3 col-md-5 col-md-push-2 col-sm-4 col-xs-12" id="per">
          <img src="images/person1.png" alt="" class="os-animation animated fadeInDown" data-os-animation="fadeInDown" data-os-animation-delay="0.3s" style="animation-delay: 0.3s;">
           <figcaption>

@@ -20,12 +20,38 @@ class Layout(models.Model):
 	name = models.CharField(max_length=50)
 	project = models.ForeignKey(Project, on_delete=models.CASCADE, null=True, blank=True)
 	
-	def screen_at(self, x, y):
-		return LayoutScreenRelation.objects.filter(layout=self, row=x, col=y)
+	def screens(self):
+		return LayoutScreenRelation.objects.filter(layout=self)
+		
+	def screen_table(self):
+		
+		rows = LayoutRow.objects.filter(layout=self)	
+		table = []
+		
+		for layout_row in rows:
+			screens = []
+			values = LayoutScreenRelation.objects.filter(layout=self,row=layout_row.row)
+			for value in values:
+				screens.append(value.screen)
+			
+			row = [layout_row.name]
+			row.extend(screens)
+			table.append(row)
+			
+		return table
 	
 	def __unicode__(self): 
 		return self.name
 
+
+class LayoutRow(models.Model):
+	name = models.CharField(max_length=50)
+	layout = models.ForeignKey(Layout, on_delete=models.CASCADE)
+	row = models.IntegerField(default=0)
+	
+	def __unicode__(self): 
+		return self.name
+	
 
 class Screen(models.Model):
 	name = models.CharField(max_length=50)

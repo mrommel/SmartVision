@@ -24,3 +24,11 @@ python manage.py migrate
 python manage.py makemigrations imagevision
 python manage.py sqlmigrate imagevision 0001
 python manage.py migrate
+
+## history of screen
+
+https://freetemplates.pro/preview/?template=sitename
+
+python manage.py makemigrations screens
+python manage.py sqlmigrate screens 0001
+python manage.py migrate
