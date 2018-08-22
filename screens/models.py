@@ -25,12 +25,12 @@ class Layout(models.Model):
 		
 	def screen_table(self):
 		
-		rows = LayoutRow.objects.filter(layout=self)	
+		rows = LayoutRow.objects.filter(layout=self).order_by('row')
 		table = []
 		
 		for layout_row in rows:
 			screens = []
-			values = LayoutScreenRelation.objects.filter(layout=self,row=layout_row.row)
+			values = LayoutScreenRelation.objects.filter(layout=self, row=layout_row.row)
 			for value in values:
 				screens.append(value.screen)
 			
@@ -58,7 +58,7 @@ class Screen(models.Model):
 	layout = models.ForeignKey(Layout, on_delete=models.CASCADE, null=True, blank=True)
 	
 	def layers(self):
-		return ScreenLayerRelation.objects.filter(screen=self)
+		return ScreenLayerRelation.objects.filter(screen=self).order_by('level')
 	
 	def __unicode__(self): 
 		return self.name
@@ -75,8 +75,10 @@ class Layer(models.Model):
 	type = models.CharField(max_length=1, choices=LAYER_TYPES, default='B', )
 	color = ColorField(default='#FF0000')
 	image = models.FileField(upload_to='uploads/', null=True, blank=True)
-	x_offset = models.IntegerField(default=0)
-	y_offset = models.IntegerField(default=0)
+	x_offset = models.IntegerField(default=164)
+	y_offset = models.IntegerField(default=88)
+	width = models.IntegerField(default=888)
+	height = models.IntegerField(default=1922)
 	
 	def __unicode__(self): 
 		return self.name
